@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   ActivityStateId, 
@@ -402,9 +401,9 @@ const App: React.FC = () => {
                   </div>
                   {!isLast && (
                     <div className="flex-shrink-0 w-12 flex items-center justify-center">
-                      <div className="h-0.5 flex-1 bg-slate-700 relative shadow-sm">
-                        <div className="absolute right-0 -top-1 border-t-4 border-l-4 border-transparent border-l-slate-700 border-t-slate-700 rotate-45 w-2 h-2"></div>
-                      </div>
+                      <svg className="w-12 h-12 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                      </svg>
                     </div>
                   )}
                 </div>
@@ -463,7 +462,14 @@ const App: React.FC = () => {
             {/* Inverted Look-back Results Grid */}
             <div className="flex-1 overflow-y-auto p-12 bg-slate-900">
               <div className="grid grid-cols-1 gap-6 max-w-6xl mx-auto">
-                {filteredRules.length > 0 ? filteredRules.map((rule, idx) => {
+                {targetState === 'ALL' ? (
+                  <div className="py-24 flex flex-col items-center text-slate-700">
+                    <svg className="w-20 h-20 mb-6 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p className="font-bold text-lg opacity-50">{lang === 'FR' ? 'Veuillez sélectionner un état cible pour afficher les parcours.' : lang === 'NL' ? 'Selecteer een doelstatus om de routes weer te geven.' : 'Please select a target state to display routes.'}</p>
+                  </div>
+                ) : filteredRules.length > 0 ? filteredRules.map((rule, idx) => {
                   const fromTheme = statusThemes[rule.fromStatus];
                   const toTheme = statusThemes[rule.toStatus];
                   
@@ -491,10 +497,9 @@ const App: React.FC = () => {
                           <div className="bg-slate-200 text-slate-900 px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg transition-transform group-hover:scale-105">
                             {getCommandLabel(rule.command, lang)}
                           </div>
-                          <div className="flex flex-col items-center text-slate-700">
-                             <div className="w-0.5 h-6 bg-slate-700"></div>
-                             <div className="border-t-8 border-x-8 border-transparent border-t-slate-700"></div>
-                          </div>
+                          <svg className="w-8 h-8 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                          </svg>
                         </div>
                       </div>
 
