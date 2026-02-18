@@ -1,0 +1,5 @@
+{
+  "name": "Riziv Accreditation Workflow Visualizer",
+  "description": "An interactive state machine simulator for the Riziv Accreditation system, visualizing transitions between unknown, requested, approved, and refused states across Standard CP, Ethics & Economy, and Dentist workflows.",
+  "requestFramePermissions": []
+}
