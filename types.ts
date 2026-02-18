@@ -35,7 +35,7 @@ export enum WorkFlowStatus {
 
 export type Language = 'EN' | 'FR' | 'NL';
 
-export type WorkflowType = 'STANDARD' | 'EE' | 'DENTIST';
+export type WorkflowType = 'STANDARD CP' | 'EE' | 'DENTIST';
 
 export interface WorkflowActivity {
   state: ActivityStateId;
