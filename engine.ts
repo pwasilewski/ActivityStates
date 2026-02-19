@@ -4,8 +4,61 @@ import {
   WorkflowCommand, 
   WorkflowActivity, 
   TransitionResult,
-  Language
+  Language,
+  CommitteeType
 } from './types.ts';
+
+export const COMMITTEE_STATES: Record<CommitteeType, ActivityStateId[]> = {
+  'DENTIST': [
+    ActivityStateId.APPROVED,           // 17
+    ActivityStateId.REQUESTED,          // 2
+    ActivityStateId.CANCELLED,          // 3
+    ActivityStateId.APPROVED_CE,        // 22
+    ActivityStateId.MISSINGINFO_GDPQ,   // 21
+    ActivityStateId.DECISIONBYGDPQ,     // 24
+    ActivityStateId.MISSINGINFO_CE,     // 20
+    ActivityStateId.REFUSED_CE,         // 23
+    ActivityStateId.REFUSED,            // 18
+  ],
+  'STANDARD CP': [
+    ActivityStateId.APPROVED,              // 17
+    ActivityStateId.APPROVED_CP,           // 10
+    ActivityStateId.REFUSED,               // 18
+    ActivityStateId.DECISIONBYGDA,         // 19
+    ActivityStateId.DISPUTED_EE,           // 14
+    ActivityStateId.REQUESTED,             // 2
+    ActivityStateId.MISSINGINFO_GDA,       // 6
+    ActivityStateId.REFUSED_CP,            // 7
+    ActivityStateId.CANCELLED,             // 3
+    ActivityStateId.DISPUTED_CP,           // 12
+    ActivityStateId.DISPUTED_CP_2,         // 13
+    ActivityStateId.APPROVED_EE,           // 11
+    ActivityStateId.REFUSED_CP_2,          // 8
+    ActivityStateId.WRONG_CP,              // 15
+    ActivityStateId.REFUSED_EE,            // 9
+    ActivityStateId.MISSINGINFO_CP,        // 4
+    ActivityStateId.MISSINGINFO_EE,        // 5
+  ],
+  'EE': [
+    ActivityStateId.APPROVED,              // 17
+    ActivityStateId.APPROVED_CP,           // 10
+    ActivityStateId.REFUSED,               // 18
+    ActivityStateId.DECISIONBYGDA,         // 19
+    ActivityStateId.DISPUTED_EE,           // 14
+    ActivityStateId.REQUESTED,             // 2
+    ActivityStateId.MISSINGINFO_GDA,       // 6
+    ActivityStateId.REFUSED_CP,            // 7
+    ActivityStateId.CANCELLED,             // 3
+    ActivityStateId.DISPUTED_CP,           // 12
+    ActivityStateId.DISPUTED_CP_2,         // 13
+    ActivityStateId.APPROVED_EE,           // 11
+    ActivityStateId.REFUSED_CP_2,          // 8
+    ActivityStateId.WRONG_CP,              // 15
+    ActivityStateId.REFUSED_EE,            // 9
+    ActivityStateId.MISSINGINFO_CP,        // 4
+    ActivityStateId.MISSINGINFO_EE,        // 5
+  ],
+};
 
 const ActivityStateTranslations: Record<ActivityStateId, { EN: string; FR: string; NL: string }> = {
   [ActivityStateId.UNKNOWN]: { EN: 'Initial State', FR: 'État Initial', NL: 'Initiële Status' },
@@ -67,8 +120,18 @@ const CommandTranslations: Record<WorkflowCommand, { EN: string; FR: string; NL:
   'NewRequest': { EN: 'New Request', FR: 'Nouvelle demande', NL: 'Nieuwe aanvraag' },
 };
 
+const CommitteeTypeTranslations: Record<CommitteeType, { EN: string; FR: string; NL: string }> = {
+  'STANDARD CP': { EN: 'Physician CP', FR: 'Comités paritaires', NL: 'Paritaire Comités' },
+  'EE': { EN: 'Ethics & Economics', FR: 'Éthique et Économie', NL: 'Ethiek en Economie' },
+    'DENTIST': { EN: 'Dentist', FR: 'Dentiste', NL: 'Tandarts' },
+};
+
 export const getCommandLabel = (cmd: WorkflowCommand, lang: Language = 'EN'): string => {
   return CommandTranslations[cmd][lang];
+};
+
+export const getCommitteeLabel = (committee: CommitteeType, lang: Language = 'EN'): string => {
+  return CommitteeTypeTranslations[committee][lang];
 };
 
 export const getStateLabel = (id: ActivityStateId, lang: Language = 'EN'): string => {

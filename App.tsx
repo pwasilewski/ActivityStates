@@ -13,7 +13,9 @@ import {
   getStateLabel, 
   getStatusLabel,
   getCommandLabel,
-  getWorkflowStatusId
+  getWorkflowStatusId,
+  getCommitteeLabel,
+  COMMITTEE_STATES
 } from './engine.ts';
 
 interface StepNode {
@@ -101,6 +103,13 @@ const App: React.FC = () => {
     const isValid = !res.error && (res.nextState !== activity.state || res.nextStatus !== activity.workflowStatus);
     
     if (!isValid) return { isValid: false, type: 'INVALID' };
+    
+    // Check if the resulting state is allowed for the current committee type
+    const allowedStates = COMMITTEE_STATES[activity.committee];
+    if (!allowedStates.includes(res.nextState)) {
+      return { isValid: false, type: 'INVALID' };
+    }
+    
     if (res.nextStatus === WorkFlowStatus.DONE) return { isValid: true, type: 'TERMINAL' };
 
     const nextActivity: WorkflowActivity = {
@@ -199,11 +208,17 @@ const App: React.FC = () => {
   }, [targetState, possibleWorkflowsForState, targetWorkflow]);
 
   const filteredRules = useMemo(() => {
+    const allowedStates = COMMITTEE_STATES[committeeType];
     return allTransitions.filter(r => {
       const matchCommittee = r.committee === committeeType;
       const matchState = targetState === 'ALL' || r.toState === parseInt(targetState);
       const matchWf = targetWorkflow === 'ALL' || r.toStatus === targetWorkflow;
-      return matchCommittee && matchState && matchWf;
+      
+      // Ensure both source and target states are valid for this committee
+      const validSourceState = allowedStates.includes(r.fromState);
+      const validTargetState = allowedStates.includes(r.toState);
+      
+      return matchCommittee && matchState && matchWf && validSourceState && validTargetState;
     });
   }, [allTransitions, committeeType, targetState, targetWorkflow]);
 
@@ -300,7 +315,7 @@ const App: React.FC = () => {
                   committeeType === committee ? (isDark ? 'bg-slate-200 text-slate-900 shadow-sm' : 'bg-blue-600 text-white shadow-sm') : (isDark ? 'text-slate-400 hover:text-slate-200' : 'text-gray-600 hover:text-gray-900')
                 }`}
               >
-                {committee === 'EE' ? 'ETHICS' : committee}
+                {getCommitteeLabel(committee, lang)}
               </button>
             ))}
           </div>
@@ -500,8 +515,8 @@ const App: React.FC = () => {
                   className={`w-full border rounded-xl px-4 py-3 text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none ${isDark ? 'bg-slate-800 border-slate-700 text-slate-200' : 'bg-white border-gray-300 text-gray-900'}`}
                 >
                   <option value="ALL">{t.allStates}</option>
-                  {Object.values(ActivityStateId).filter(v => typeof v === 'number').map(id => (
-                    <option key={id} value={id}>{getStateLabel(id as ActivityStateId, lang)} ({ActivityStateId[id as number]})</option>
+                  {COMMITTEE_STATES[committeeType].map(id => (
+                    <option key={id} value={id}>{getStateLabel(id, lang)} ({ActivityStateId[id]})</option>
                   ))}
                 </select>
               </div>
@@ -548,7 +563,7 @@ const App: React.FC = () => {
                         <div className={`text-[10px] font-black uppercase mb-6 tracking-widest ${isDark ? 'text-slate-500' : 'text-gray-500'}`}>{t.precondition}</div>
                         <div className="space-y-4">
                           <div className="flex items-center gap-2">
-                            <span className={`text-[9px] font-black px-2 py-0.5 rounded uppercase ${isDark ? 'bg-slate-200 text-slate-900' : 'bg-blue-600 text-white'}`}>{rule.committee}</span>
+                            <span className={`text-[9px] font-black px-2 py-0.5 rounded uppercase ${isDark ? 'bg-slate-200 text-slate-900' : 'bg-blue-600 text-white'}`}>{getCommitteeLabel(rule.committee, lang)}</span>
                           </div>
                           <div className="space-y-1">
                             <div className={`text-sm font-black leading-tight ${isDark ? 'text-slate-100' : 'text-gray-900'}`}>{getStateLabel(rule.fromState, lang)}</div>
