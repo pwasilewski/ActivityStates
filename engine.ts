@@ -56,7 +56,7 @@ const CommandTranslations: Record<WorkflowCommand, { EN: string; FR: string; NL:
   'Refuse': { EN: 'Refuse', FR: 'Refuser', NL: 'Weiger' },
   'RefuseCE': { EN: 'Refuse by CE', FR: 'Refuser par le CE', NL: 'Weigeren door de EC' },
   'Approve': { EN: 'Approve', FR: 'Approuver', NL: 'Goedkeuren' },
-  'ApproveCE': { EN: 'Accept by CE', FR: 'Accepter par la CE', NL: 'Goedgekeuren door de EC' },
+  'ApproveCE': { EN: 'Accept by CE', FR: 'Accepter par le CE', NL: 'Goedgekeuren door de EC' },
   'RegisterDecsByGda': { EN: 'Register GDA decision', FR: 'Enregistrer la décision du GDA', NL: 'Registreren beslissing AS' },
   'RegisterDecsByGdpq': { EN: 'Register GDPQ decision', FR: 'Enregistrer la décision du GDPQ', NL: 'Registreren beslissing ST' },
   'RegisterWrongComiteParitaire': { EN: 'Wrong CP', FR: 'Enregistrer comité paritaire fautif', NL: 'Registreer foutief paritair comité' },
@@ -87,7 +87,7 @@ export const processCommand = (
   activity: WorkflowActivity, 
   command: WorkflowCommand
 ): TransitionResult => {
-  const { state, workflowStatus, type } = activity;
+  const { state, workflowStatus, committee } = activity;
 
   if (command === 'Cancel') {
     return { nextState: ActivityStateId.CANCELLED, nextStatus: WorkFlowStatus.DONE };
@@ -107,16 +107,16 @@ export const processCommand = (
         case 'CommitAgenda':
           return { nextState: ActivityStateId.REQUESTED, nextStatus: WorkFlowStatus.WAITING_FOR_DECISION };
         case 'RegisterMissingInfoNeed':
-          return type === 'EE' 
+          return committee === 'EE' 
             ? { nextState: ActivityStateId.MISSINGINFO_EE, nextStatus: WorkFlowStatus.WAITING_FOR_REQUESTOR }
             : { nextState: ActivityStateId.MISSINGINFO_CP, nextStatus: WorkFlowStatus.WAITING_FOR_REQUESTOR };
         case 'RegisterMissingInfoCENeed':
           return { nextState: ActivityStateId.MISSINGINFO_CE, nextStatus: WorkFlowStatus.READY_FOR_AGENDA };
         case 'Approve':
-          if (type === 'EE') return { nextState: ActivityStateId.APPROVED_EE, nextStatus: WorkFlowStatus.READY_FOR_AGENDA };
+          if (committee === 'EE') return { nextState: ActivityStateId.APPROVED_EE, nextStatus: WorkFlowStatus.READY_FOR_AGENDA };
           return { nextState: ActivityStateId.APPROVED_CP, nextStatus: WorkFlowStatus.READY_FOR_AGENDA };
         case 'Refuse':
-          return type === 'EE'
+          return committee === 'EE'
             ? { nextState: ActivityStateId.REFUSED_EE, nextStatus: WorkFlowStatus.READY_FOR_AGENDA }
             : { nextState: ActivityStateId.REFUSED_CP, nextStatus: WorkFlowStatus.WAITING_FOR_REQUESTOR };
         case 'RegisterDecsByGda':

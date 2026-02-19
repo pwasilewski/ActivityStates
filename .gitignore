@@ -49,6 +49,6 @@ Thumbs.db
 *.temp
 TFSTemp/
 
-# Build output (commented out to allow dist for GitHub Pages)
-# dist
+# Build output
+dist
 dist-ssr

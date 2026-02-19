@@ -1,4 +1,3 @@
-
 export enum ActivityStateId {
   UNKNOWN = 1,
   REQUESTED = 2,
@@ -35,12 +34,12 @@ export enum WorkFlowStatus {
 
 export type Language = 'EN' | 'FR' | 'NL';
 
-export type WorkflowType = 'STANDARD CP' | 'EE' | 'DENTIST';
+export type CommitteeType = 'STANDARD CP' | 'EE' | 'DENTIST';
 
 export interface WorkflowActivity {
   state: ActivityStateId;
   workflowStatus: WorkFlowStatus;
-  type: WorkflowType;
+  committee: CommitteeType;
 }
 
 export type WorkflowCommand = 
